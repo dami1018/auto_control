@@ -1,0 +1,37 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Nov  7 17:48:28 2024
+
+@author: csc05176
+"""
+
+import uiautomation as auto
+# 定位微信
+wx = auto.WindowControl(Name='微信')
+# 微信置顶
+wx.SetFocus()
+# wx.ListControl()
+# wx.SwitchToThisWindow()
+# 定位会话
+hw = wx.ListControl(Name='会话')
+# 定位未读信息
+# 只要是带铃铛的，就不会当作时未读
+we = hw.TextControl(searchDepth=4)
+# print(we)
+# 点击未读信息 
+# 操作不能间断，一旦间断就不能继续查到未读信息，当无未读信息时也不能显示为空
+we.SetFocus()
+we.Click(simulateMove=False)
+we.Name
+we.Exists()
+# 读取最后一条未读信息
+last_msg = wx.ListControl(Name='消息').GetChildren()[-1].Name
+# 对未读信息进行判断
+# print(last_msg)
+if '小q' in last_msg or '小Q' in last_msg:
+    # 出现了相同的情况，定位之后直接输入不成立，需要点击再输入
+    edit = wx.EditControl(Name='文件传输助手')
+    edit.Click()
+    edit.SendKeys("你好")
+    wx.SendKeys('你好',waitTime=1)
+    wx.SendKeys('{Enter}',waitTime=1)
