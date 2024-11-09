@@ -1,0 +1,39 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Nov  7 20:45:50 2024
+
+@author: csc05176
+"""
+
+import uiautomation as auto # uiautomation  库
+import re # 引入正则库
+import pandas as pd # 引入pandas库
+import numpy as np # 引入numpy库
+# 首先捕获微信主窗口
+wx = auto.WindowControl(Name="微信", ClassName="WeChatMainWndForPC")
+
+# 把微信窗口，放置到激活状态
+wx.SwitchToThisWindow()
+
+hw = wx.ListControl(Name="会话") # 捕捉微信的发言列表句柄。
+
+items = hw.GetChildren()  # 提取发言列表句柄的每个详细内容。
+for msg in items:
+    print(msg.Name)
+    match = re.search(r'(.+)(\d+)条新消息', msg.Name)
+    if match: # 如果有新消息，
+        nickname = match.group(1)
+        print(nickname)
+        message_count = int(match.group(2))
+        # 没有显示无法点击
+        msg.Click(simulateMove=False)
+        # 获取消息列表控件
+        xiaoxis = wx.ListControl(Name='消息')
+        # 获取消息列表控件的子控件
+        xiaoxi_children = xiaoxis.GetChildren()
+
+        # 获取未读的所有信息
+        last_xiaoxis = xiaoxi_children[-message_count::]
+for msg in last_xiaoxis:
+    print(msg.Name)
+wx.SendKeys('你好',waitTime=0)
