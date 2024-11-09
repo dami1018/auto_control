@@ -1,0 +1,90 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sat Nov  9 10:30:36 2024
+
+@author: 1
+"""
+
+import uiautomation as auto # uiautomation  库
+import re # 引入正则库
+import pandas as pd # 引入pandas库
+import numpy as np # 引入numpy库
+import selenium
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+import time
+from selenium.webdriver.common.keys import Keys
+def ask(text,sign):
+    if sign==1:
+       element = driver.find_element(By.XPATH,'/html/body/div/div/div[1]/div[2]/div[1]/div/div/div/div[3]/div[1]/div[2]/div/div[1]/div[1]/p')
+       element.click()
+       element.send_keys(text)
+       time.sleep(0.5)
+       element.send_keys(Keys.RETURN)
+       time.sleep(3)
+       answer = f'/html/body/div/div/div[1]/div[2]/div[1]/div/div/div/div/div[1]/div[4]/div/div[1]/div/div/div[2]/div/div[{sign*2+1}]/div/div/div/div/div/div[2]/div[1]/div/div[1]/div/div/div/div/div/p'
+       element = driver.find_element(By.XPATH,answer)
+       result = element.text
+       print(result,sign)
+       sign += 1
+    else:
+       element = driver.find_element(By.XPATH,'/html/body/div/div/div[1]/div[2]/div[1]/div/div/div/div/div[1]/div[4]/div/div[2]/div/div[1]/div[2]/div/div[1]/div[1]/p')
+       element.click()
+       element.send_keys(text)
+       time.sleep(0.5)
+       element.send_keys(Keys.RETURN)
+       time.sleep(3)
+       answer = f'/html/body/div/div/div[1]/div[2]/div[1]/div/div/div/div/div[1]/div[4]/div/div[1]/div/div/div[2]/div/div[{sign*2+1}]/div/div/div/div/div/div[2]/div[1]/div/div[1]/div/div/div/div/div/p'
+       element = driver.find_element(By.XPATH,answer)
+       result = element.text
+       print(result,sign)
+       sign += 1 
+    return(sign,result)
+# 首先捕获微信主窗口
+wx = auto.WindowControl(Name="微信", ClassName="WeChatMainWndForPC")
+# 把微信窗口，放置到激活状态
+driver = webdriver.Chrome()
+driver.get("https://kimi.moonshot.cn/")
+sign = 1
+
+
+wx.SwitchToThisWindow()
+hw = wx.ListControl(Name="会话") # 捕捉微信的发言列表句柄。
+last_xiaoxis = []
+items = hw.GetChildren()  # 提取发言列表句柄的每个详细内容。
+# msg = items[1]
+# print(msg.Name)
+# 定位报错的原因是回答的内容太长了，内容太长就改变了定位的
+for msg in items:
+    print(msg.Name)
+    match = re.search(r'(.+)(\d+)条新消息', msg.Name)
+    if match: # 如果有新消息，
+        nickname = match.group(1)
+        print(nickname)
+        message_count = int(match.group(2))
+        # 没有显示无法点击
+        msg.Click(simulateMove=False)
+        # 获取消息列表控件
+        xiaoxis = wx.ListControl(Name='消息')
+        # 获取消息列表控件的子控件
+        xiaoxi_children = xiaoxis.GetChildren()
+        # 获取未读的所有信息
+        last_xiaoxis += [item.Name for item in xiaoxi_children[-message_count::]]
+        for text in last_xiaoxis:
+            if '小q' in text or '小Q' in text:
+                print('你好')
+                sign,te = ask('你好',sign)
+                '''
+                edit = wx.EditControl(Name=msg.Name)
+                wx.SwitchToThisWindow()
+                time.sleep(1)
+                edit.Click()
+                edit.SendKeys("你好")
+                edit.SendKeys("{Enter}")
+                print(te)
+                '''
+for msg in last_xiaoxis:
+    print(msg)
+
+
+
