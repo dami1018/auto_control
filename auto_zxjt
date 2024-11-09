@@ -1,0 +1,126 @@
+
+import uiautomation as auto
+zxjt = auto.WindowControl(Name="中信建投网上交易卓越安全加强版V10.10")
+zxjt.SetFocus()
+zxjt = auto.WindowControl(Name="中信建投网上交易卓越安全加强版V10.10 - [首页]")
+zxjt.SetFocus()
+rgzn = zxjt.ButtonControl(Name='人工智能')
+rgzn.Click()
+desktop = auto.GetRootControl()
+for control, depth in auto.WalkTree(desktop, getFirstChild=GetFirstChild, getNextSibling=GetNextSibling, includeTop=True, maxDepth=2):
+    print(' ' * depth * 4 + str(control))
+for control, depth in auto.WalkTree(desktop, includeTop=True, maxDepth=2):
+    print(' ' * depth * 4 + str(control))
+    
+    
+import uiautomation as automation
+
+def PrintControlInfo(control, depth=0):
+    """打印控件的信息，包括类型、名称、位置等。"""
+    indent = ' ' * depth * 4  # 根据深度缩进
+    control_info = (
+        f"{indent}控件类型: {control.ControlType}\n"
+        f"{indent}控件名称: {control.Name}\n"
+        f"{indent}控件自动化ID: {control.AutomationId}\n"
+        f"{indent}控件位置: {control.BoundingRectangle}\n"
+    )
+    '''
+    with open(r'd:\control.txt','w',encoding='utf8') as f:
+       f.write(f"{indent}控件类型: {control.ControlType}\n") 
+       f.write(f"{indent}控件名称: {control.Name}\n") 
+       f.write(f"{indent}控件自动化ID: {control.AutomationId}\n")
+       f.write(f"{indent}控件位置: {control.BoundingRectangle}\n")
+    # print(control_info)
+    '''
+    return(f"{indent}控件类型: {control.ControlType}\n{indent}控件名称: {control.Name}\n{indent}控件自动化ID: {control.AutomationId}\n{indent}控件位置: {control.BoundingRectangle}\n")
+def WalkControls(control, st,depth=0):
+    """遍历控件树并打印控件信息。"""
+    st += PrintControlInfo(control, depth)
+    
+    # 遍历子控件
+    for child in control.GetChildren():
+        st = WalkControls(child,st, depth + 1)
+    return(st)
+def main(control):
+    """主函数，开始遍历桌面上的控件。"""
+    desktop = automation.GetRootControl()  # 获取桌面控件
+    return WalkControls(desktop,control)  # 开始遍历
+    
+
+if __name__ == '__main__':
+    control=''
+    control = main(control)
+    # print(control)
+    with open(r'd:\control.txt','w',encoding='utf8') as f:
+        f.write(control)
+zxjt = auto.WindowControl(Name="中信建投网上交易卓越安全加强版V10.10 - [首页]")
+shouye = zxjt.ButtonControl(AutomationId='首页')
+# button是50000
+# list是50008
+shouye.Click()
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Nov  8 17:40:13 2024
+
+@author: csc05176
+"""
+
+import uiautomation as auto
+zxjt = auto.WindowControl(Name="中信建投网上交易卓越安全加强版V10.10")
+zxjt.SetFocus()
+zxjt = auto.WindowControl(Name="中信建投网上交易卓越安全加强版V10.10 - [首页]")
+zxjt.SetFocus()
+rgzn = zxjt.ButtonControl(Name='人工智能')
+rgzn.Click()
+desktop = auto.GetRootControl()
+for control, depth in auto.WalkTree(desktop, getFirstChild=GetFirstChild, getNextSibling=GetNextSibling, includeTop=True, maxDepth=2):
+    print(' ' * depth * 4 + str(control))
+for control, depth in auto.WalkTree(desktop, includeTop=True, maxDepth=2):
+    print(' ' * depth * 4 + str(control))
+    
+    
+import uiautomation as automation
+
+def PrintControlInfo(control, depth=0):
+    """打印控件的信息，包括类型、名称、位置等。"""
+    indent = ' ' * depth * 4  # 根据深度缩进
+    control_info = (
+        f"{indent}控件类型: {control.ControlType}\n"
+        f"{indent}控件名称: {control.Name}\n"
+        f"{indent}控件自动化ID: {control.AutomationId}\n"
+        f"{indent}控件位置: {control.BoundingRectangle}\n"
+    )
+    '''
+    with open(r'd:\control.txt','w',encoding='utf8') as f:
+       f.write(f"{indent}控件类型: {control.ControlType}\n") 
+       f.write(f"{indent}控件名称: {control.Name}\n") 
+       f.write(f"{indent}控件自动化ID: {control.AutomationId}\n")
+       f.write(f"{indent}控件位置: {control.BoundingRectangle}\n")
+    # print(control_info)
+    '''
+    return(f"{indent}控件类型: {control.ControlType}\n{indent}控件名称: {control.Name}\n{indent}控件自动化ID: {control.AutomationId}\n{indent}控件位置: {control.BoundingRectangle}\n")
+def WalkControls(control, st,depth=0):
+    """遍历控件树并打印控件信息。"""
+    st += PrintControlInfo(control, depth)
+    
+    # 遍历子控件
+    for child in control.GetChildren():
+        st = WalkControls(child,st, depth + 1)
+    return(st)
+def main(control):
+    """主函数，开始遍历桌面上的控件。"""
+    desktop = automation.GetRootControl()  # 获取桌面控件
+    return WalkControls(desktop,control)  # 开始遍历
+    
+
+if __name__ == '__main__':
+    control=''
+    control = main(control)
+    # print(control)
+    with open(r'd:\control.txt','w',encoding='utf8') as f:
+        f.write(control)
+zxjt = auto.WindowControl(Name="中信建投网上交易卓越安全加强版V10.10 - [首页]")
+shouye = zxjt.ButtonControl(AutomationId='首页')
+# button是50000
+# list是50008
+shouye.Click()
