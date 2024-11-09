@@ -1,0 +1,148 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Nov  5 12:38:11 2024
+
+@author: csc05176
+"""
+
+import subprocess
+from pywinauto.application import Application
+from pywinauto import Desktop
+from pywinauto import findwindows
+import pywinauto
+from io import StringIO
+import sys
+import psutil
+from pywinauto.keyboard import SendKeys
+from pywinauto.keyboard import send_keys
+# 1、获取所有窗口信息
+# 1.1、通过findwindows
+windows = findwindows.find_elements()
+for window in windows:
+    print(window.rich_text,window.handle)
+# 中信建投网上交易卓越安全加强版V10.10 uia不行得换win32
+app = Application(backend='win32').connect(title='中信建投网上交易卓越安全加强版V10.10')
+zxjt = app.window(title='中信建投网上交易卓越安全加强版V10.10')
+zxjt.print_control_identifiers()
+
+
+import uiautomation as auto
+wechatWindow = auto.WindowControl(searchDepth=1, Name="微信", ClassName='WeChatMainWndForPC')
+print('wechatWindow',wechatWindow)
+sendButton = wechatWindow.ButtonControl(Name='发送(S)')
+sendButton.Click()
+
+wechatWindow.SetFocus()
+messages = wechatWindow.ListControl(Name='消息')
+print(messages)
+messages.GetChildren()
+message=messages.GetChildren()[3]
+print('message',message)
+print(len(messages.GetChildren()))
+
+edit = wechatWindow.EditControl(ProcessId='微信小程序平台')
+edit = wechatWindow.EditControl(Name='施秋')
+edit.SendKeys("你好")
+
+
+wechatWindow = auto.WindowControl(searchDepth=1, className='WeChatMainWndForPC', Name='微信')
+wechatWindow.SetFocus()
+# 点击通讯录
+button = wechatWindow.ButtonControl(Name='通讯录')
+button.Click()
+# 点击通讯录管理
+administration = wechatWindow.ButtonControl(Name="通讯录管理")
+
+administration.Click()
+
+communication_administration = auto.WindowControl(Name="通讯录管理", ClassName="ContactManagerWindow")
+
+# 将鼠标放至内容的中心，滚轮对联系人列表才能生效
+communication_administration.MoveCursorToMyCenter()
+list1 = communication_administration.ListControl(Name="")
+
+import time
+# a表示存储列表，b表示计数器,flag控制代码是否退出
+a = []
+b = 1
+ 
+flag = True
+start_time = time.time()
+print("""开始时间：{}""".format(start_time))
+while flag:
+    list1 = communication_administration.ListControl(Name="")
+    nickname = list1.GetChildren()[0].TextControl()
+    '''判断是不是在列表a中，如果列表中没有，则添加'''
+    if nickname.Name not in a:
+        print(b, '', nickname.Name)
+        b += 1
+        a.append(nickname.Name)
+        with open(r'd:\name.txt', 'a', encoding='utf-8') as f:
+            f.write(nickname.Name)
+            f.write('\n')
+    # 滚轮下滚
+    auto.WheelDown(waitTime=0.01)
+ 
+
+window_control = wechatWindow.ToolBarControl(searchDepth=5, LocalizedControlType="工具栏")
+wechatWindow.SetFocus()
+window_control.MoveCursorToMyCenter()
+wechat_window = auto.WindowControl(searchDepth=1, ClassName='WeChatMainWndForPC')
+guide_tool = wechat_window.ToolBarControl( Name='导航')
+wechat_window.SetFocus()
+guide_tool.MoveCursorToMyCenter()
+
+chat_search = wechat_window.EditControl(Name='搜索')
+wechat_window.SetFocus()
+chat_search.MoveCursorToMyCenter()
+
+chat_massage = wechat_window.ListControl(searchDepth=13, Name='消息')
+wechat_window.SetFocus()
+chat_massage.MoveCursorToMyCenter()
+
+chat_massage = wechat_window.ListControl(Name='消息')
+wechat_window.SetFocus()
+chat_massage.MoveCursorToMyCenter()
+
+chat_list = wechat_window.ListControl(searchDepth=8, Name='会话')
+wechat_window.SetFocus()
+chat_list.MoveCursorToMyCenter()
+
+chat_list = wechat_window.ListControl( Name='会话')
+wechat_window.SetFocus()
+chat_list.MoveCursorToMyCenter()
+
+self.search_result = self.wechat_window.ListControl(searchDepth=8, Name="@str:IDS_FAV_SEARCH_RESULT:3780",
+                                                    LocalizedControlType="列表")
+wechat_window.ListControl()
+chat_list.TextControl()
+
+edit = wechatWindow.EditControl(ProcessId='微信小程序平台')
+wechat_window.SetFocus()
+edit.MoveCursorToMyCenter()
+
+    # 手动实现滚轮滚动到底操作
+    # 空格
+    if auto.IsKeyPressed(auto.Keys.VK_SPACE):
+        print("到底了")
+        for j in list1.GetChildren()[1:]:
+            last_nickname = j.TextControl()
+ 
+            if last_nickname not in a:
+                print(b, '', last_nickname.Name)
+                b += 1
+                a.append(last_nickname)
+                with open(r'd:\name.txt', 'a', encoding='utf-8') as f:
+                    f.write(last_nickname.Name)
+                    f.write('\n')
+        print(a)
+        flag = False
+        end_time = time.time()
+        sum_time = end_time - start_time
+        print("""运行时间：{}s""".format(sum_time))
+
+
+zxjtWindow = auto.WindowControl(searchDepth=1, Name="中信建投网上交易卓越安全加强版V10.10")
+zxjtWindow.SetFocus()
+sendButton = zxjtWindow.ButtonControl(Name='立即登录')
+sendButton.Click()
