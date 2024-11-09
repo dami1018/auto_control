@@ -1,0 +1,137 @@
+# -*- coding: utf-ba8 -*-
+"""
+Created on Sun Nov  3 09:17:03 2024
+
+@author: P53
+"""
+
+import subprocess
+from pywinauto.application import Application
+from pywinauto import Desktop
+from pywinauto import findwindows
+import pywinauto
+from io import StringIO
+import sys
+import psutil
+from pywinauto.keyboard import SendKeys
+from pywinauto.keyboard import send_keys
+# 1、获取所有窗口信息
+# 1.1、通过findwindows
+windows = findwindows.find_elements()
+for window in windows:
+    print(window.rich_text,window.handle)
+# 1.2、通过desktop
+# 默认是win32不光无用的窗口信息多，而且还容易报错，可能是有的属性是缺失的，建议还是使用except处理
+windows = Desktop(backend='uia').windows()
+for window in windows:
+    try:
+        print(window.window_text())
+        print(window.class_name())
+        print(window.handle)
+    except Exception as e:
+        print("出现错误")
+# 2、联结窗口
+# 2.1、通过app来联结
+# 2.1.1、名称模糊联结
+app = Application(backend='uia').connect(title='微信')
+# app.top_window()
+weixin = app.window(title='微信')
+weixin.print_control_identifiers()
+# 2.1.2、通过PID联结
+# 找到PID
+def get_pid(p_name):
+    pids = psutil.pids()
+    for pid in pids:
+        p = psutil.Process(pid)
+        if p_name in p.name():
+            return(pid)
+path = 'WeChat.exe'
+get_pid(path)
+            
+# 联结
+app = Application(backend='uia').connect(process=13184)
+weixin = app.window(title='微信')
+# 2.2、通过desktop联结
+weixin = Desktop(backend='uia').window(title='微信')
+weixin.print_control_identifiers()
+
+# 3、基本操作
+weixin.minimize()
+weixin.maximize()
+weixin.restore()
+weixin.set_focus()
+
+# 4、获取所有控件信息
+weixin.print_control_identifiers()
+# 将控件信息存入txt文件
+# 重定向io输出
+output = StringIO()
+orginal = sys.stdout
+sys.stdout = output
+dlg.print_control_identifiers()
+sys.stdout = orginal
+dlg_output = output.getvalue()
+output.close()
+# 存入txt文件
+out_path = r'd:\log.txt'
+with open(out_path,'w',encoding='utf-8') as f:
+    f.write(dlg_output)
+# 获取子窗口的全部信息
+# 方法一：对存入txt的文件进行处理
+# text = dlg_output
+def extract_child(text):
+    lines = text.strip().splitlines()
+    elines = [line.strip(' |') for line in lines]
+    dlines = [line for line in elines if 'child_window' in line ]
+    return(dlines)
+child_list = extract_child(dlg_output)
+
+# 方法二：遍历控件获取所有信息
+# 5、对控件进行操作
+# 查找控件
+def find(text,li):
+    return([l for l in li if text in l])
+find('秦鹏',child_list)
+# 找到秦鹏的要素
+# 如果点击有多个选项，但是对于其他的就可以精确定位
+qinpeng = weixin.child_window(title="秦鹏", control_type="Button")
+qinpeng.click_input()
+# 找到shanhaitian
+find('山海天',child_list)
+shanhaitian = weixin.child_window(title="山海天", control_type="Button")
+shanhaitian.set_focus()
+shanhaitian.click_input()
+# 找到搜索
+find('搜索',child_list)
+sousuo = weixin.child_window(title="搜索", control_type="Edit")
+sousuo.click_input()
+# 第一种输入的方法
+sousuo.type_keys('qin') #不?haoxiangxuyao需要先点击就可以输入，但是并不清空原来的内容
+# 第二中输入的方法
+sousuo.set_text("wei") #无法输入文本
+# 两个必须同时运行，否则鼠标位置已经有改变了，所以输入到spyder里面了
+# 找到搜索
+sousuo.set_focus()
+sousuo.click_input()
+SendKeys('hao')
+
+sousuo.set_focus()
+sousuo.click_input()
+send_keys('hao')
+# 找到列表中的联系人
+find('秦总',child_list)
+find('ListItem',child_list)
+find('微信支付',child_list)
+
+liaotian = weixin.child_window(title="聊天文件", control_type="Button")
+liaotian.click_input()
+# 空间信息从最左边开始，先是秦鹏，然后聊天，通讯录，收藏，聊天文件等等，尽管有一些panel但是因为没有child信息可以忽略不计了，同时因为聊天的主角是慧慧，所以会有一些panel有王慧的名字
+# 找到对话框并输入内容
+find('文件传输助手',child_list)
+wenjiancs = weixin.child_window(title="文件传输助手", control_type="Edit")
+wenjiancs.click_input()
+wenjiancs.type_keys("你好")
+# 发送信息
+find('发送',child_list)
+fasong = weixin.child_window(title="发送(S)", control_type="Button")
+fasong.click_input()
