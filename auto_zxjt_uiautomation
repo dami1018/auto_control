@@ -1,0 +1,235 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sat Nov  9 11:56:09 2024
+
+@author: 1
+"""
+
+
+
+    
+    
+import uiautomation as auto
+# 打印出所有控件信息
+def PrintControlInfo(control, depth=0):
+    """打印控件的信息，包括类型、名称、位置等。"""
+    indent = ' ' * depth * 4  # 根据深度缩进
+    control_info = (
+        f"{indent}控件类型: {control.ControlType}\n"
+        f"{indent}控件名称: {control.Name}\n"
+        f"{indent}控件自动化ID: {control.AutomationId}\n"
+        f"{indent}控件位置: {control.BoundingRectangle}\n"
+    )
+    '''
+    with open(r'd:\control.txt','w',encoding='utf8') as f:
+       f.write(f"{indent}控件类型: {control.ControlType}\n") 
+       f.write(f"{indent}控件名称: {control.Name}\n") 
+       f.write(f"{indent}控件自动化ID: {control.AutomationId}\n")
+       f.write(f"{indent}控件位置: {control.BoundingRectangle}\n")
+    # print(control_info)
+    '''
+    return(f"{indent}控件类型: {control.ControlType}\n{indent}控件名称: {control.Name}\n{indent}控件自动化ID: {control.AutomationId}\n{indent}控件位置: {control.BoundingRectangle}\n")
+def WalkControls(control, st,depth=0):
+    """遍历控件树并打印控件信息。"""
+    st += PrintControlInfo(control, depth)
+    
+    # 遍历子控件
+    for child in control.GetChildren():
+        st = WalkControls(child,st, depth + 1)
+    return(st)
+def main(control):
+    """主函数，开始遍历桌面上的控件。"""
+    desktop = auto.GetRootControl()  # 获取桌面控件
+    return WalkControls(desktop,control)  # 开始遍历    
+def app(pro,control):
+    """主函数，开始遍历桌面上的控件。"""
+    #desktop = pro.GetChildren()  # 获取桌面控件
+    return WalkControls(pro,control)  # 开始遍历
+
+'''
+for i in desktop:
+    print(i.ControlType)
+'''
+
+if __name__ == '__main__':
+    control=''
+    control = main(control)
+    pro = auto.WindowControl(Name="中信建投网上交易卓越安全加强版V10.10 - [系统页面]")
+    content = app(pro,control)
+    # print(control)
+    with open(r'd:\control1.txt','w',encoding='utf8') as f:
+        f.write(control)
+# 摸索中信建投的app
+zxjt = auto.WindowControl(Name="中信建投网上交易卓越安全加强版V10.10 - [首页]")
+zxjt = auto.WindowControl(Name="中信建投网上交易卓越安全加强版V10.10 - [系统页面]")
+zxjt.SwitchToThisWindow()
+zxjt.SetFocus()
+# 使用控件类型和自动化id定位,时间太长找不到，基于根目录的
+sy = auto.Control(Name='首页',AutomationId=65280,ControlType=50032)
+dir(sy)
+sy.Name
+# 基于子目录的
+sy = zxjt.Control(Name='首页',AutomationId=65280,ControlType=50032)
+sy.Name
+# 已微信举例是只有zxjt这么难找吗？微信很容易找到了，但是zxjt找不到
+xx = auto.Control(Name='消息')
+xx.Name
+# 只使用zxjt,只用一个要素,通过这种方法找到，AutomationId为str,ControlType为int
+sy = zxjt.Control(Name='首页')
+sy.Name
+a = sy.AutomationId
+a = sy.ControlType
+# zxjt.SetFocus() 有时候不好用
+zxjt.SwitchToThisWindow()
+sy.Click()
+print(sy.ClassName)
+# 工作区
+gzq = zxjt.Control(AutomationId='59648')
+zxjt.SwitchToThisWindow()
+gzq.Click()
+print(gzq.ClassName)
+# 某个按钮,证券交易未登录右数第五个 设置
+s1 = zxjt.Control(AutomationId='3020')
+s1.Name
+zxjt.SwitchToThisWindow()
+s1.Click()
+# 系统
+s2 = zxjt.Control(AutomationId='3019')
+zxjt.SwitchToThisWindow()
+s2.Click()
+# 消息
+s3 = zxjt.Control(AutomationId='3018')
+zxjt.SwitchToThisWindow()
+s3.Click()
+# 消息
+s3 = zxjt.Control(AutomationId='3017')
+zxjt.SwitchToThisWindow()
+s3.Click()
+# 返回
+s4 = zxjt.Control(AutomationId='3016')
+zxjt.SwitchToThisWindow()
+s4.Click()
+# 最小化
+s5 = zxjt.Control(AutomationId='3000')
+zxjt.SwitchToThisWindow()
+s5.Click()
+# 咨询
+s5 = zxjt.Control(AutomationId='1008')
+zxjt.SwitchToThisWindow()
+s5.Click()
+# 登录，登陆之后系统页面就发生变化了，变为：中信建投网上交易卓越安全加强版V10.10 - [系统页面]
+s5 = zxjt.Control(AutomationId='1002')
+zxjt.SwitchToThisWindow()
+s5.Click()
+# 密码
+s5 = zxjt.Control(AutomationId='234')
+zxjt.SwitchToThisWindow()
+s5.Click()
+s5.SendKeys('1234')
+# 安全吗
+s5 = zxjt.Control(AutomationId='235')
+zxjt.SwitchToThisWindow()
+s5.Click()
+s5.SendKeys('1234')
+# 安全吗
+s5 = zxjt.Control(AutomationId='233')
+zxjt.SwitchToThisWindow()
+s5.Click()
+s5.SendKeys('1234')
+# 安全吗，更不知道输入到哪里去了
+s5 = zxjt.Control(AutomationId='233')
+zxjt.SwitchToThisWindow()
+s5.Click()
+zxjt.SendKeys('1234')
+# 安全吗
+s5 = zxjt.Control(AutomationId='233')
+zxjt.SwitchToThisWindow()
+s5.Click()
+s5.SendKey('1')
+# 打印一级子目录
+chi = zxjt.GetChildren()
+for control in chi:
+    print(f"控件类型: {control.ControlType}\n控件名称: {control.Name}\n控件自动化ID: {control.AutomationId}\n控件位置: {control.BoundingRectangle}\n")
+    print("-"*40)
+# 一级子目录逐步定位
+s5 = zxjt.Control(AutomationId='59393')
+zxjt.SwitchToThisWindow()
+s5.Click()
+s5.SendKey('1')
+# 
+# 打印当前的app列表
+# auto比较慢
+desktop = auto.GetRootControl()
+control_li = desktop.GetChildren()
+for control in control_li:
+    control_info = (
+        f"控件类型: {control.ControlType}\n"
+        f"控件名称: {control.Name}\n"
+        f"控件自动化ID: {control.AutomationId}\n"
+        f"控件位置: {control.BoundingRectangle}\n"
+    )
+    print(control_info)
+# pywinauto是不是快一点
+from pywinauto import findwindows
+windows = findwindows.find_elements()
+for window in windows:
+    print(f"Window Title: {window.rich_text}, Handle: {window.handle}")  
+# 中信建投网上交易卓越安全加强版V10.10 - [版面-股票买卖]
+zxjt = auto.WindowControl(Name="中信建投网上交易卓越安全加强版V10.10 - [版面-股票买卖]")
+chi = zxjt.GetChildren()
+for control in chi:
+    print(f"控件类型: {control.ControlType}\n控件名称: {control.Name}\n控件自动化ID: {control.AutomationId}\n控件位置: {control.BoundingRectangle}\n")
+    print("-"*40)
+# app控件打印
+control=''
+pro = auto.WindowControl(Name="中信建投网上交易卓越安全加强版V10.10 - [版面-股票买卖]")
+content = app(pro,control)
+with open(r'd:\control2.txt','w',encoding='utf8') as f:
+    f.write(content)  
+#
+# 证券或名称
+s5 = zxjt.Control(AutomationId='5001')
+zxjt.SwitchToThisWindow()
+s5.Click()
+# 证券
+s5 = zxjt.Control(AutomationId='9049')
+zxjt.SwitchToThisWindow()
+s5.Click()
+s5.SendKey('600036')
+#
+# 证券
+s5 = zxjt.Control(AutomationId='9049')
+zxjt.SwitchToThisWindow()
+s5.Click()
+time.sleep(1)
+pyautogui.write('600036')
+# 数量
+s5 = zxjt.Control(AutomationId='9010')
+zxjt.SwitchToThisWindow()
+s5.Click()
+time.sleep(1)
+pyautogui.write('200')
+# 价格 
+s5 = zxjt.Control(AutomationId='9022')
+zxjt.SwitchToThisWindow()
+s5.Click()
+time.sleep(1)
+pyautogui.write('200')
+# 9089,9055，9008，9019
+s5 = zxjt.Control(AutomationId='9019')
+zxjt.SwitchToThisWindow()
+s5.Click()
+# 有几个控件没办法定位，用pywinauto和uiautomation都不行，只能用pyautogui了
+import pyautogui
+import time
+
+# 等待几秒钟，便于切换到目标应用程序
+time.sleep(3)
+# 模拟输入字符串 "abc"
+pyautogui.write('abc')
+
+shouye = zxjt.ButtonControl(AutomationId='首页')
+shouye.
+# button是50000
+# list是50008
+shouye.Click()
