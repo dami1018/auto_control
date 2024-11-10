@@ -1,0 +1,75 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Nov 10 17:05:22 2024
+
+@author: 1
+"""
+import selenium
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from lxml import etree
+from bs4 import BeautifulSoup
+import urllib
+import numpy as np
+import pandas as pd
+import re
+from selenium.webdriver.common.keys import Keys
+import time
+def ask(text,sign):
+    if sign==1:
+       element = driver.find_element(By.XPATH,'/html/body/div/div/div[1]/div[2]/div[1]/div/div/div/div[3]/div[1]/div[2]/div/div[1]/div[1]/p')
+       element.click()
+       element.send_keys(text)
+       time.sleep(0.5)
+       element.send_keys(Keys.RETURN)
+       # 等待时间要长一点，否则没有回答会报错的
+       time.sleep(10)
+       # answer包含的内容太少，应该把所有的内容都采集到
+       answer = f'/html/body/div/div/div[1]/div[2]/div[1]/div/div/div/div/div[1]/div[4]/div/div[1]/div/div/div[2]/div/div[{sign*2+1}]/div/div/div/div/div/div[2]/div[1]/div/div[1]/div/div/div/div/div/p'
+       element = driver.find_element(By.XPATH,answer)
+       result = element.text
+       print(result,sign)
+       sign += 1
+    else:
+       element = driver.find_element(By.XPATH,'/html/body/div/div/div[1]/div[2]/div[1]/div/div/div/div/div[1]/div[4]/div/div[2]/div/div[1]/div[2]/div/div[1]/div[1]/p')
+       element.click()
+       element.send_keys(text)
+       time.sleep(0.5)
+       element.send_keys(Keys.RETURN)
+       time.sleep(15)
+       answer = f'/html/body/div/div/div[1]/div[2]/div[1]/div/div/div/div/div[1]/div[4]/div/div[1]/div/div/div[2]/div/div[{sign*2+1}]/div/div/div/div/div/div[2]/div[1]/div/div[1]/div/div/div/div/div/p'
+       element = driver.find_element(By.XPATH,answer)
+       result = element.text
+       try:
+           answer_1=f'/html/body/div/div/div[1]/div[2]/div[1]/div/div/div/div/div[1]/div[4]/div/div[1]/div/div/div[2]/div/div[{sign*2+1}]/div/div/div/div/div/div[2]/div[1]/div/div[1]/div/div/div/div/div/ol'
+           element_1 = driver.find_element(By.XPATH,answer_1)
+           result_1 = element_1.text
+           result += result_1
+       except Exception as e:
+           print(e)
+       print(result,sign)
+       sign += 1 
+    return(sign,result)
+# timesleep很关键，等待时间不够就会报错
+driver = webdriver.Chrome()
+driver.get("https://kimi.moonshot.cn/") 
+time.sleep(10)
+talk_li = []      
+sign = 1
+time.sleep(10)
+text = '我觉得你说的对'
+sign,answer = ask(text,sign)
+talk_li.append(f'序号:{sign-1}\n'+ 'ask: ' + text +'.   answer: ' + answer)
+time.sleep(3)
+text = '如何快速减肥？'
+sign,answer = ask(text,sign)
+talk_li.append(f'序号:{sign-1}\n'+ 'ask: ' + text +'.   answer: ' + answer)
+# 采集所有内容
+# /html/body/div/div/div[1]/div[2]/div[1]/div/div/div/div/div[1]/div[4]/div/div[1]/div[1]/div/div[2]/div/div[5]/div/div/div/div/div/div[2]/div[1]/div/div[1]/div/div/div/div/div/p[1]
+# /html/body/div/div/div[1]/div[2]/div[1]/div/div/div/div/div[1]/div[4]/div/div[1]/div[1]/div/div[2]/div/div[5]/div/div/div/div/div/div[2]/div[1]/div/div[1]/div/div/div/div/div/ol
+# /html/body/div/div/div[1]/div[2]/div[1]/div/div/div/div/div[1]/div[4]/div/div[1]/div[1]/div/div[2]/div/div[5]/div/div/div/div/div/div[2]/div[1]/div/div[1]/div/div/div/div/div/p[2]
+# lo = '/html/body/div/div/div[1]/div[2]/div[1]/div/div/div/div/div[1]/div[4]/div/div[1]/div[1]/div/div[2]/div/div[5]/div/div/div/div/div/div[2]/div[1]/div/div[1]/div/div/div/div/div/p'
+# element = driver.find_element(By.XPATH,lo)
+# result = element.text
